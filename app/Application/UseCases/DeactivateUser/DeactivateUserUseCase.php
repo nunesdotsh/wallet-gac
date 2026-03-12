@@ -43,14 +43,20 @@ final class DeactivateUserUseCase
             throw new UserNotFoundException($input->userId);
         }
 
-        $this->unitOfWork->execute(function () use ($userId) {
-            $wallet = $this->walletRepository->findByUserId($userId);
+        $wallet = $this->walletRepository->findByUserId($userId);
 
+        $user->deactivate();
+
+        if ($wallet !== null) {
+            $wallet->deactivate();
+        }
+
+        $this->unitOfWork->execute(function () use ($user, $wallet) {
             if ($wallet !== null) {
-                $this->walletRepository->delete($wallet->id());
+                $this->walletRepository->save($wallet);
             }
 
-            $this->userRepository->delete($userId);
+            $this->userRepository->save($user);
         });
     }
 }
