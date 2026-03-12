@@ -10,6 +10,7 @@ use App\Domain\User\ValueObjects\Email;
 use App\Domain\User\ValueObjects\HashedPassword;
 use App\Domain\User\ValueObjects\UserId;
 use App\Models\User as UserModel;
+use DateTimeImmutable;
 
 /**
  * Implementação Eloquent do repositório de User.
@@ -34,19 +35,16 @@ final class EloquentUserRepository implements UserRepositoryInterface
 
     public function save(User $user): void
     {
-        UserModel::updateOrCreate(
-            ['id' => $user->id()->value()],
-            [
-                'name'     => $user->name(),
-                'email'    => $user->email()->value(),
-                'password' => $user->password()->value(),
-            ],
+        $model = UserModel::withoutGlobalScopes()->firstOrNew(
+            ['id' => $user->id()->value()]
         );
-    }
 
-    public function delete(UserId $id): void
-    {
-        UserModel::destroy($id->value());
+        $model->name       = $user->name();
+        $model->email      = $user->email()->value();
+        $model->password   = $user->password()->value();
+        $model->deleted_at = $user->deactivatedAt();
+
+        $model->save();
     }
 
     public function existsByEmail(Email $email): bool
@@ -61,6 +59,9 @@ final class EloquentUserRepository implements UserRepositoryInterface
             name: $model->name,
             email: new Email($model->email),
             password: HashedPassword::fromHash($model->password),
+            deactivatedAt: $model->deleted_at
+                ? new DateTimeImmutable($model->deleted_at)
+                : null,
         );
     }
 }

@@ -10,6 +10,7 @@ use App\Domain\Wallet\Repositories\WalletRepositoryInterface;
 use App\Domain\Wallet\ValueObjects\Money;
 use App\Domain\Wallet\ValueObjects\WalletId;
 use App\Infrastructure\Persistence\Eloquent\Models\WalletModel;
+use DateTimeImmutable;
 
 /**
  * Implementação Eloquent do repositório de Wallet.
@@ -53,18 +54,15 @@ final class EloquentWalletRepository implements WalletRepositoryInterface
 
     public function save(Wallet $wallet): void
     {
-        WalletModel::updateOrCreate(
-            ['id' => $wallet->id()->value()],
-            [
-                'user_id' => $wallet->userId()->value(),
-                'balance' => $wallet->balance()->toDecimal(),
-            ],
+        $model = WalletModel::withoutGlobalScopes()->firstOrNew(
+            ['id' => $wallet->id()->value()]
         );
-    }
 
-    public function delete(WalletId $id): void
-    {
-        WalletModel::destroy($id->value());
+        $model->user_id    = $wallet->userId()->value();
+        $model->balance    = $wallet->balance()->toDecimal();
+        $model->deleted_at = $wallet->deactivatedAt();
+
+        $model->save();
     }
 
     private function toDomain(WalletModel $model): Wallet
@@ -73,6 +71,9 @@ final class EloquentWalletRepository implements WalletRepositoryInterface
             id: new WalletId($model->id),
             userId: new UserId($model->user_id),
             balance: Money::fromDecimal((string) $model->balance),
+            deactivatedAt: $model->deleted_at
+                ? new DateTimeImmutable($model->deleted_at)
+                : null,
         );
     }
 }
