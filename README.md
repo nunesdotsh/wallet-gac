@@ -203,18 +203,13 @@ cd wallet-gac
 composer install
 
 # 2. Configurar ambiente
-cp .env.example .env
+cp .env.sqlite.example .env
 php artisan key:generate
 
-# 3. Configurar SQLite no .env
-#    Comentar as linhas do PostgreSQL e descomentar:
-#    DB_CONNECTION=sqlite
-#    DB_DATABASE=database/database.sqlite
-
-# 4. Criar o arquivo do banco
+# 3. Criar o arquivo do banco
 touch database/database.sqlite
 
-# 5. Executar migrations e iniciar o servidor
+# 4. Executar migrations e iniciar o servidor
 php artisan migrate
 php artisan serve
 ```
