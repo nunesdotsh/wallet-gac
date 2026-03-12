@@ -130,7 +130,9 @@ function submitReverse() {
 
                         <template v-if="transaction.counterpart_name || transaction.counterpart_email">
                             <div class="flex items-center justify-between border-b pb-3">
-                                <dt class="text-sm text-muted-foreground">Contrapartida</dt>
+                                <dt class="text-sm text-muted-foreground">
+                                    {{ transaction.type === 'transfer_out' ? 'Enviado para' : 'Recebido de' }}
+                                </dt>
                                 <dd class="text-right text-sm">
                                     <span v-if="transaction.counterpart_name" class="block font-medium">
                                         {{ transaction.counterpart_name }}

@@ -17,6 +17,8 @@ final readonly class TransactionHistoryItemDTO
         public string $balanceAfter,
         public string $status,
         public ?string $counterpartWalletId,
+        public ?string $counterpartName,
+        public ?string $counterpartEmail,
         public ?string $description,
         public ?string $reversedAt,
         public string $createdAt,

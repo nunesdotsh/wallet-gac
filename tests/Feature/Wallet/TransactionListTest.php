@@ -11,7 +11,8 @@ declare(strict_types=1);
 
 use App\Application\UseCases\Deposit\DepositInputDTO;
 use App\Application\UseCases\Deposit\DepositUseCase;
-use App\Infrastructure\Persistence\Eloquent\Models\TransactionModel;
+use App\Application\UseCases\Transfer\TransferInputDTO;
+use App\Application\UseCases\Transfer\TransferUseCase;
 use App\Infrastructure\Persistence\Eloquent\Models\WalletModel;
 use App\Models\User;
 
@@ -120,4 +121,32 @@ test('redireciona para login ao acessar detalhe de transação sem autenticaçã
     $response = $this->get(route('transactions.show', 'qualquer-id'));
 
     $response->assertRedirect(route('login'));
+});
+
+test('exibe nome e e-mail do destinatário no detalhe de uma transferência', function () {
+    $sender   = User::factory()->create();
+    $receiver = User::factory()->create(['name' => 'Maria Silva', 'email' => 'maria@example.com']);
+
+    WalletModel::create(['user_id' => $sender->id, 'balance' => '0.00']);
+    WalletModel::create(['user_id' => $receiver->id, 'balance' => '0.00']);
+
+    $depositUseCase = app(DepositUseCase::class);
+    $depositUseCase->execute(new DepositInputDTO(userId: $sender->id, amount: '200.00'));
+
+    $transferUseCase = app(TransferUseCase::class);
+    $result = $transferUseCase->execute(new TransferInputDTO(
+        senderUserId: $sender->id,
+        receiverUserId: $receiver->id,
+        amount: '50.00',
+    ));
+
+    $response = $this->actingAs($sender)
+        ->get(route('transactions.show', $result->senderTransactionId));
+
+    $response->assertOk();
+    $response->assertInertia(fn ($page) => $page
+        ->component('wallet/TransactionDetail')
+        ->where('transaction.counterpart_name', 'Maria Silva')
+        ->where('transaction.counterpart_email', 'maria@example.com')
+    );
 });
