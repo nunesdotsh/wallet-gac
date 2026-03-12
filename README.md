@@ -159,7 +159,7 @@ CLI: tabela no terminal / HTTP: redirect com flash message
 
 ```bash
 # 1. Clonar o repositório
-git clone https://github.com/seu-usuario/wallet-gac.git
+git clone https://github.com/nunesdotsh/wallet-gac.git
 cd wallet-gac
 
 # 2. Instalar dependências PHP (necessário antes de subir o Sail)
@@ -198,7 +198,7 @@ php artisan key:generate
 
 ```bash
 # 1. Clonar e instalar
-git clone https://github.com/seu-usuario/wallet-gac.git
+git clone https://github.com/nunesdotsh/wallet-gac.git
 cd wallet-gac
 composer install
 
