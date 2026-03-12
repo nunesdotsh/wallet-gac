@@ -9,7 +9,7 @@ defineProps<{
 </script>
 
 <template>
-    <Card>
+    <Card class="h-full">
         <CardHeader>
             <CardTitle class="flex items-center gap-2">
                 <WalletIcon class="size-5" />

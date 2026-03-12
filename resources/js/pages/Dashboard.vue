@@ -41,10 +41,10 @@ function viewTransaction(transaction: Transaction) {
                 <AlertDescription>{{ flash.error }}</AlertDescription>
             </Alert>
 
-            <div class="grid gap-4 md:grid-cols-3">
-                <div class="md:col-span-2">
-                    <WalletBalance v-if="wallet" :wallet="wallet" />
-                    <Card v-else>
+            <div class="grid items-stretch gap-4 md:grid-cols-3">
+                <div class="h-full md:col-span-2">
+                    <WalletBalance v-if="wallet" :wallet="wallet" class="h-full" />
+                    <Card v-else class="h-full">
                         <CardHeader>
                             <CardTitle>Carteira</CardTitle>
                         </CardHeader>
@@ -56,7 +56,7 @@ function viewTransaction(transaction: Transaction) {
                     </Card>
                 </div>
 
-                <Card>
+                <Card class="h-full">
                     <CardHeader>
                         <CardTitle>Ações Rápidas</CardTitle>
                     </CardHeader>
