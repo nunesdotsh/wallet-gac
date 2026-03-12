@@ -44,4 +44,33 @@ describe('User Entity', function () {
 
         expect($user1->id()->equals($user2->id()))->toBeFalse();
     });
+
+    it('novo usuário está ativo por padrão', function () {
+        $user = User::create('Test', new Email('test@example.com'), HashedPassword::fromPlain('pass'));
+
+        expect($user->isActive())->toBeTrue();
+        expect($user->deactivatedAt())->toBeNull();
+    });
+
+    it('desativa o usuário e registra o momento', function () {
+        $user = User::create('Test', new Email('test@example.com'), HashedPassword::fromPlain('pass'));
+
+        $user->deactivate();
+
+        expect($user->isActive())->toBeFalse();
+        expect($user->deactivatedAt())->not->toBeNull();
+        expect($user->deactivatedAt())->toBeInstanceOf(DateTimeImmutable::class);
+    });
+
+    it('reconstitui usuário desativado com deactivatedAt informado', function () {
+        $id       = UserId::generate();
+        $email    = new Email('deactivated@example.com');
+        $password = HashedPassword::fromHash(password_hash('pass', PASSWORD_BCRYPT));
+        $at       = new DateTimeImmutable('2024-01-01 00:00:00');
+
+        $user = new User($id, 'Inactive', $email, $password, $at);
+
+        expect($user->isActive())->toBeFalse();
+        expect($user->deactivatedAt())->toBe($at);
+    });
 });

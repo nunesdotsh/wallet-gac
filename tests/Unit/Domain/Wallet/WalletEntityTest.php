@@ -126,4 +126,31 @@ describe('Wallet Entity', function () {
             expect($wallet->hasEnoughBalance(new Money(5000)))->toBeFalse();
         });
     });
+
+    describe('deactivation', function () {
+        it('nova carteira está ativa por padrão', function () {
+            $wallet = Wallet::create(UserId::generate());
+
+            expect($wallet->isActive())->toBeTrue();
+            expect($wallet->deactivatedAt())->toBeNull();
+        });
+
+        it('desativa a carteira e registra o momento', function () {
+            $wallet = Wallet::create(UserId::generate());
+
+            $wallet->deactivate();
+
+            expect($wallet->isActive())->toBeFalse();
+            expect($wallet->deactivatedAt())->not->toBeNull();
+            expect($wallet->deactivatedAt())->toBeInstanceOf(DateTimeImmutable::class);
+        });
+
+        it('reconstitui carteira desativada com deactivatedAt informado', function () {
+            $at     = new DateTimeImmutable('2024-01-01 00:00:00');
+            $wallet = new Wallet(WalletId::generate(), UserId::generate(), new Money(0), $at);
+
+            expect($wallet->isActive())->toBeFalse();
+            expect($wallet->deactivatedAt())->toBe($at);
+        });
+    });
 });
