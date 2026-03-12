@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Infrastructure\Persistence\Eloquent\Models\WalletModel;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -47,7 +48,7 @@ class UserFactory extends Factory
     }
 
     /**
-     * Indicate that the model has two-factor authentication configured.
+     * Indica que o model tem autenticação de dois fatores configurada.
      */
     public function withTwoFactor(): static
     {
@@ -56,5 +57,21 @@ class UserFactory extends Factory
             'two_factor_recovery_codes' => encrypt(json_encode(['recovery-code-1'])),
             'two_factor_confirmed_at' => now(),
         ]);
+    }
+
+    /**
+     * Cria automaticamente uma Wallet zerada para cada usuário gerado,
+     * espelhando o comportamento de produção do CreateUserUseCase.
+     */
+    public function configure(): static
+    {
+        return $this->afterCreating(function (User $user) {
+            if (! WalletModel::where('user_id', $user->id)->exists()) {
+                WalletModel::create([
+                    'user_id' => $user->id,
+                    'balance' => '0.00',
+                ]);
+            }
+        });
     }
 }

@@ -20,6 +20,13 @@ interface UserRepositoryInterface
 
     public function findByEmail(Email $email): ?User;
 
+    /**
+     * Persiste o estado atual da entidade User.
+     *
+     * Quando o usuário estiver com deactivatedAt definido, a implementação
+     * deve registrar isso na coluna deleted_at (ou equivalente), garantindo
+     * que consultas padrão excluam o registro — sem jamais apagá-lo.
+     */
     public function save(User $user): void;
 
     public function existsByEmail(Email $email): bool;

@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers\Settings;
 
+use App\Application\UseCases\DeactivateUser\DeactivateUserInputDTO;
+use App\Application\UseCases\DeactivateUser\DeactivateUserUseCase;
+use App\Application\UseCases\UpdateProfile\UpdateProfileInputDTO;
+use App\Application\UseCases\UpdateProfile\UpdateProfileUseCase;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\ProfileDeleteRequest;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
@@ -14,6 +18,11 @@ use Inertia\Response;
 
 class ProfileController extends Controller
 {
+    public function __construct(
+        private readonly UpdateProfileUseCase $updateProfileUseCase,
+        private readonly DeactivateUserUseCase $deactivateUserUseCase,
+    ) {}
+
     /**
      * Show the user's profile settings page.
      */
@@ -30,13 +39,16 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $output = $this->updateProfileUseCase->execute(new UpdateProfileInputDTO(
+            userId: $request->user()->id,
+            name: $request->validated('name'),
+            email: $request->validated('email'),
+        ));
 
-        if ($request->user()->isDirty('email')) {
+        if ($output->emailChanged) {
             $request->user()->email_verified_at = null;
+            $request->user()->save();
         }
-
-        $request->user()->save();
 
         return to_route('profile.edit');
     }
@@ -46,11 +58,11 @@ class ProfileController extends Controller
      */
     public function destroy(ProfileDeleteRequest $request): RedirectResponse
     {
-        $user = $request->user();
+        $userId = $request->user()->id;
 
         Auth::logout();
 
-        $user->delete();
+        $this->deactivateUserUseCase->execute(new DeactivateUserInputDTO(userId: $userId));
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

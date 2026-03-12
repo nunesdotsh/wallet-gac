@@ -31,7 +31,6 @@ test('exibe dashboard para usuário autenticado', function () {
 
 test('dashboard mostra dados da wallet após depósito', function () {
     $user = User::factory()->create();
-    WalletModel::create(['user_id' => $user->id, 'balance' => '0.00']);
 
     $depositUseCase = app(DepositUseCase::class);
     $depositUseCase->execute(new DepositInputDTO(
@@ -51,7 +50,6 @@ test('dashboard mostra dados da wallet após depósito', function () {
 
 test('dashboard mostra transações recentes', function () {
     $user = User::factory()->create();
-    WalletModel::create(['user_id' => $user->id, 'balance' => '0.00']);
 
     $depositUseCase = app(DepositUseCase::class);
     $depositUseCase->execute(new DepositInputDTO(
@@ -72,15 +70,22 @@ test('dashboard mostra transações recentes', function () {
     );
 });
 
-test('dashboard exibe wallet nula para usuário sem carteira', function () {
-    $user = User::factory()->create();
+test('novo usuário já possui wallet com saldo zero', function () {
+    $createUserUseCase = app(\App\Application\UseCases\CreateUser\CreateUserUseCase::class);
+    $output = $createUserUseCase->execute(new \App\Application\UseCases\CreateUser\CreateUserInputDTO(
+        name: 'Novo Usuário',
+        email: 'novo@email.com',
+        password: 'senha123',
+    ));
+
+    $user = User::findOrFail($output->userId);
 
     $response = $this->actingAs($user)->get(route('dashboard'));
 
     $response->assertOk();
     $response->assertInertia(fn ($page) => $page
         ->component('Dashboard')
-        ->where('wallet', null)
-        ->where('transactions', [])
+        ->has('wallet')
+        ->where('wallet.balance', 0)
     );
 });

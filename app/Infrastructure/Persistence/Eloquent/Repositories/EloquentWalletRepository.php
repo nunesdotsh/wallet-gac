@@ -62,6 +62,11 @@ final class EloquentWalletRepository implements WalletRepositoryInterface
         );
     }
 
+    public function delete(WalletId $id): void
+    {
+        WalletModel::destroy($id->value());
+    }
+
     private function toDomain(WalletModel $model): Wallet
     {
         return new Wallet(

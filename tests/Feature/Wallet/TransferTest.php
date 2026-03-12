@@ -41,8 +41,6 @@ test('exibe formulário de transferência para usuário autenticado', function (
 test('realiza transferência com sucesso', function () {
     $sender = User::factory()->create();
     $receiver = User::factory()->create();
-    WalletModel::create(['user_id' => $sender->id, 'balance' => '0.00']);
-    WalletModel::create(['user_id' => $receiver->id, 'balance' => '0.00']);
 
     $depositUseCase = app(DepositUseCase::class);
     $depositUseCase->execute(new DepositInputDTO(
@@ -68,8 +66,6 @@ test('realiza transferência com sucesso', function () {
 test('rejeita transferência com saldo insuficiente', function () {
     $sender = User::factory()->create();
     $receiver = User::factory()->create();
-    WalletModel::create(['user_id' => $sender->id, 'balance' => '0.00']);
-    WalletModel::create(['user_id' => $receiver->id, 'balance' => '0.00']);
 
     $response = $this->actingAs($sender)
         ->post(route('transfer.store'), [
@@ -82,7 +78,6 @@ test('rejeita transferência com saldo insuficiente', function () {
 
 test('rejeita transferência para email inexistente', function () {
     $sender = User::factory()->create();
-    WalletModel::create(['user_id' => $sender->id, 'balance' => '0.00']);
 
     $depositUseCase = app(DepositUseCase::class);
     $depositUseCase->execute(new DepositInputDTO(
@@ -137,7 +132,6 @@ test('rejeita transferência sem informar email', function () {
 
 test('rejeita transferência para si mesmo', function () {
     $sender = User::factory()->create();
-    WalletModel::create(['user_id' => $sender->id, 'balance' => '0.00']);
 
     $depositUseCase = app(DepositUseCase::class);
     $depositUseCase->execute(new DepositInputDTO(

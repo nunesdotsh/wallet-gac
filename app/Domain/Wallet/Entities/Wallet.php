@@ -8,6 +8,7 @@ use App\Domain\User\ValueObjects\UserId;
 use App\Domain\Wallet\Exceptions\InsufficientBalanceException;
 use App\Domain\Wallet\ValueObjects\Money;
 use App\Domain\Wallet\ValueObjects\WalletId;
+use DateTimeImmutable;
 
 /**
  * Entidade de domínio da carteira.
@@ -18,14 +19,16 @@ use App\Domain\Wallet\ValueObjects\WalletId;
 final class Wallet
 {
     /**
-     * @param WalletId $id Identificador único
-     * @param UserId $userId ID do usuário proprietário
-     * @param Money $balance Saldo atual
+     * @param WalletId               $id             Identificador único
+     * @param UserId                 $userId         ID do usuário proprietário
+     * @param Money                  $balance        Saldo atual
+     * @param DateTimeImmutable|null $deactivatedAt  Momento da desativação, null se ativa
      */
     public function __construct(
         private readonly WalletId $id,
         private readonly UserId $userId,
         private Money $balance,
+        private ?DateTimeImmutable $deactivatedAt = null,
     ) {}
 
     /**
@@ -98,5 +101,23 @@ final class Wallet
     public function hasEnoughBalance(Money $amount): bool
     {
         return $this->balance->isGreaterThanOrEqual($amount);
+    }
+
+    /**
+     * Desativa a carteira, preservando todo o histórico para auditoria.
+     */
+    public function deactivate(): void
+    {
+        $this->deactivatedAt = new DateTimeImmutable();
+    }
+
+    public function isActive(): bool
+    {
+        return $this->deactivatedAt === null;
+    }
+
+    public function deactivatedAt(): ?DateTimeImmutable
+    {
+        return $this->deactivatedAt;
     }
 }

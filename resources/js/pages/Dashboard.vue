@@ -12,7 +12,7 @@ import { dashboard } from '@/routes';
 import type { BreadcrumbItem, Wallet, Transaction } from '@/types';
 
 defineProps<{
-    wallet?: Wallet;
+    wallet: Wallet;
     transactions: Transaction[];
 }>();
 
@@ -43,17 +43,7 @@ function viewTransaction(transaction: Transaction) {
 
             <div class="grid items-stretch gap-4 md:grid-cols-3">
                 <div class="h-full md:col-span-2">
-                    <WalletBalance v-if="wallet" :wallet="wallet" class="h-full" />
-                    <Card v-else class="h-full">
-                        <CardHeader>
-                            <CardTitle>Carteira</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p class="text-muted-foreground">
-                                Você ainda não possui uma carteira. Realize seu primeiro depósito para criar uma.
-                            </p>
-                        </CardContent>
-                    </Card>
+                    <WalletBalance :wallet="wallet" class="h-full" />
                 </div>
 
                 <Card class="h-full">

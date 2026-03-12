@@ -38,5 +38,12 @@ interface WalletRepositoryInterface
      */
     public function findByUserIdForUpdate(UserId $userId): ?Wallet;
 
+    /**
+     * Persiste o estado atual da entidade Wallet.
+     *
+     * Quando a carteira estiver com deactivatedAt definido, a implementação
+     * deve registrar isso na coluna deleted_at, garantindo que consultas
+     * padrão excluam o registro — sem jamais apagá-lo.
+     */
     public function save(Wallet $wallet): void;
 }

@@ -35,7 +35,6 @@ test('exibe formulário de depósito para usuário autenticado', function () {
 
 test('realiza depósito com sucesso', function () {
     $user = User::factory()->create();
-    WalletModel::create(['user_id' => $user->id, 'balance' => '0.00']);
 
     $response = $this->actingAs($user)
         ->post(route('deposit.store'), ['amount' => 50.00]);
@@ -49,7 +48,6 @@ test('realiza depósito com sucesso', function () {
 
 test('realiza múltiplos depósitos e acumula saldo', function () {
     $user = User::factory()->create();
-    WalletModel::create(['user_id' => $user->id, 'balance' => '0.00']);
 
     $this->actingAs($user)->post(route('deposit.store'), ['amount' => 100.00]);
     $this->actingAs($user)->post(route('deposit.store'), ['amount' => 50.50]);
@@ -60,7 +58,6 @@ test('realiza múltiplos depósitos e acumula saldo', function () {
 
 test('rejeita depósito com valor zero', function () {
     $user = User::factory()->create();
-    WalletModel::create(['user_id' => $user->id, 'balance' => '0.00']);
 
     $response = $this->actingAs($user)
         ->post(route('deposit.store'), ['amount' => 0]);
@@ -70,7 +67,6 @@ test('rejeita depósito com valor zero', function () {
 
 test('rejeita depósito com valor negativo', function () {
     $user = User::factory()->create();
-    WalletModel::create(['user_id' => $user->id, 'balance' => '0.00']);
 
     $response = $this->actingAs($user)
         ->post(route('deposit.store'), ['amount' => -10]);
@@ -80,7 +76,6 @@ test('rejeita depósito com valor negativo', function () {
 
 test('rejeita depósito com valor não numérico', function () {
     $user = User::factory()->create();
-    WalletModel::create(['user_id' => $user->id, 'balance' => '0.00']);
 
     $response = $this->actingAs($user)
         ->post(route('deposit.store'), ['amount' => 'abc']);
@@ -90,7 +85,6 @@ test('rejeita depósito com valor não numérico', function () {
 
 test('rejeita depósito sem informar valor', function () {
     $user = User::factory()->create();
-    WalletModel::create(['user_id' => $user->id, 'balance' => '0.00']);
 
     $response = $this->actingAs($user)
         ->post(route('deposit.store'), []);

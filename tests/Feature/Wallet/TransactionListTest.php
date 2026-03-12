@@ -24,7 +24,6 @@ test('redireciona para login ao acessar transações sem autenticação', functi
 
 test('exibe lista vazia para usuário sem transações', function () {
     $user = User::factory()->create();
-    WalletModel::create(['user_id' => $user->id, 'balance' => '0.00']);
 
     $response = $this->actingAs($user)->get(route('transactions.index'));
 
@@ -38,7 +37,6 @@ test('exibe lista vazia para usuário sem transações', function () {
 
 test('exibe transações após depósito', function () {
     $user = User::factory()->create();
-    WalletModel::create(['user_id' => $user->id, 'balance' => '0.00']);
 
     $depositUseCase = app(DepositUseCase::class);
     $depositUseCase->execute(new DepositInputDTO(
@@ -58,7 +56,6 @@ test('exibe transações após depósito', function () {
 
 test('exibe detalhes de uma transação específica', function () {
     $user = User::factory()->create();
-    WalletModel::create(['user_id' => $user->id, 'balance' => '0.00']);
 
     $depositUseCase = app(DepositUseCase::class);
     $result = $depositUseCase->execute(new DepositInputDTO(
@@ -80,7 +77,6 @@ test('exibe detalhes de uma transação específica', function () {
 
 test('retorna 404 para transação inexistente', function () {
     $user = User::factory()->create();
-    WalletModel::create(['user_id' => $user->id, 'balance' => '0.00']);
 
     $response = $this->actingAs($user)
         ->get(route('transactions.show', 'id-inexistente'));
@@ -90,7 +86,6 @@ test('retorna 404 para transação inexistente', function () {
 
 test('paginação funciona corretamente', function () {
     $user = User::factory()->create();
-    WalletModel::create(['user_id' => $user->id, 'balance' => '0.00']);
 
     $depositUseCase = app(DepositUseCase::class);
     for ($i = 0; $i < 20; $i++) {
@@ -127,8 +122,6 @@ test('exibe nome e e-mail do destinatário no detalhe de uma transferência', fu
     $sender   = User::factory()->create();
     $receiver = User::factory()->create(['name' => 'Maria Silva', 'email' => 'maria@example.com']);
 
-    WalletModel::create(['user_id' => $sender->id, 'balance' => '0.00']);
-    WalletModel::create(['user_id' => $receiver->id, 'balance' => '0.00']);
 
     $depositUseCase = app(DepositUseCase::class);
     $depositUseCase->execute(new DepositInputDTO(userId: $sender->id, amount: '200.00'));

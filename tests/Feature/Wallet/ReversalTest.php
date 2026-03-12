@@ -22,7 +22,6 @@ test('redireciona para login ao reverter transação sem autenticação', functi
 
 test('reverte transação de depósito com sucesso', function () {
     $user = User::factory()->create();
-    WalletModel::create(['user_id' => $user->id, 'balance' => '0.00']);
 
     $depositUseCase = app(DepositUseCase::class);
     $result = $depositUseCase->execute(new DepositInputDTO(
@@ -45,7 +44,6 @@ test('reverte transação de depósito com sucesso', function () {
 
 test('rejeita reversão de transação já revertida', function () {
     $user = User::factory()->create();
-    WalletModel::create(['user_id' => $user->id, 'balance' => '0.00']);
 
     $depositUseCase = app(DepositUseCase::class);
     $result = $depositUseCase->execute(new DepositInputDTO(
@@ -76,7 +74,6 @@ test('rejeita reversão de transação inexistente', function () {
 
 test('saldo é restaurado após reversão de depósito', function () {
     $user = User::factory()->create();
-    WalletModel::create(['user_id' => $user->id, 'balance' => '0.00']);
 
     $depositUseCase = app(DepositUseCase::class);
 

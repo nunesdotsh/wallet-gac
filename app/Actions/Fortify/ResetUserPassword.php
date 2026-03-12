@@ -2,8 +2,9 @@
 
 namespace App\Actions\Fortify;
 
+use App\Application\UseCases\UpdatePassword\UpdatePasswordInputDTO;
+use App\Application\UseCases\UpdatePassword\UpdatePasswordUseCase;
 use App\Concerns\PasswordValidationRules;
-use App\Domain\User\ValueObjects\HashedPassword;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\ResetsUserPasswords;
@@ -11,6 +12,10 @@ use Laravel\Fortify\Contracts\ResetsUserPasswords;
 class ResetUserPassword implements ResetsUserPasswords
 {
     use PasswordValidationRules;
+
+    public function __construct(
+        private readonly UpdatePasswordUseCase $updatePasswordUseCase,
+    ) {}
 
     /**
      * Validate and reset the user's forgotten password.
@@ -23,8 +28,9 @@ class ResetUserPassword implements ResetsUserPasswords
             'password' => $this->passwordRules(),
         ])->validate();
 
-        $user->forceFill([
-            'password' => HashedPassword::fromPlain($input['password'])->value(),
-        ])->save();
+        $this->updatePasswordUseCase->execute(new UpdatePasswordInputDTO(
+            userId: $user->id,
+            newPassword: $input['password'],
+        ));
     }
 }

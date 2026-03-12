@@ -6,7 +6,6 @@ namespace App\Presentation\Http\Controllers\Wallet;
 
 use App\Application\UseCases\GetBalance\GetBalanceUseCase;
 use App\Application\UseCases\GetTransactionHistory\GetTransactionHistoryUseCase;
-use App\Domain\Wallet\Exceptions\WalletNotFoundException;
 use App\Presentation\Http\Traits\FormatsMoney;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -41,23 +40,16 @@ class DashboardController
         /** @var string $userId */
         $userId = $request->user()->id;
 
-        $wallet = null;
-        $transactions = [];
+        $balance = $this->getBalanceUseCase->execute($userId);
+        $wallet = [
+            'id' => $balance->walletId,
+            'balance' => (float) $balance->balance,
+            'formatted_balance' => $this->formatMoney($balance->balance),
+        ];
 
-        try {
-            $balance = $this->getBalanceUseCase->execute($userId);
-            $wallet = [
-                'id' => $balance->walletId,
-                'balance' => (float) $balance->balance,
-                'formatted_balance' => $this->formatMoney($balance->balance),
-            ];
-
-            $allTransactions = $this->getTransactionHistoryUseCase->execute($userId);
-            $recentTransactions = array_slice($allTransactions, 0, 10);
-            $transactions = array_map(fn ($tx) => $this->formatTransaction($tx), $recentTransactions);
-        } catch (WalletNotFoundException) {
-            // Usuário ainda não possui carteira
-        }
+        $allTransactions = $this->getTransactionHistoryUseCase->execute($userId);
+        $recentTransactions = array_slice($allTransactions, 0, 10);
+        $transactions = array_map(fn ($tx) => $this->formatTransaction($tx), $recentTransactions);
 
         return Inertia::render('Dashboard', [
             'wallet' => $wallet,

@@ -24,11 +24,13 @@ return new class extends Migration
 
             $table->foreign('wallet_id')
                 ->references('id')
-                ->on('wallets');
+                ->on('wallets')
+                ->onDelete('restrict');
 
             $table->foreign('counterpart_wallet_id')
                 ->references('id')
-                ->on('wallets');
+                ->on('wallets')
+                ->onDelete('set null');
 
             $table->index('wallet_id');
             $table->index('status');
@@ -37,7 +39,8 @@ return new class extends Migration
         Schema::table('transactions', function (Blueprint $table) {
             $table->foreign('related_transaction_id')
                 ->references('id')
-                ->on('transactions');
+                ->on('transactions')
+                ->onDelete('set null');
         });
     }
 

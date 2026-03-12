@@ -44,6 +44,11 @@ final class EloquentUserRepository implements UserRepositoryInterface
         );
     }
 
+    public function delete(UserId $id): void
+    {
+        UserModel::destroy($id->value());
+    }
+
     public function existsByEmail(Email $email): bool
     {
         return UserModel::where('email', $email->value())->exists();
