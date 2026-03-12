@@ -330,8 +330,6 @@ php artisan wallet:history --email="joao@email.com"
 
 A aplicação possui uma **interface web completa** construída com Vue 3 + Inertia.js, que reutiliza os mesmos Use Cases da CLI.
 
-> **Documentação detalhada:** [`doc/09-presentation-http.md`](doc/09-presentation-http.md)
-
 ### Rotas Web
 
 | Método | URI | Descrição |
@@ -710,7 +708,7 @@ Mapeamento dos critérios de avaliação do desafio e como foram atendidos:
 | **Código limpo** | PSR-12 (Pint), SOLID, nomes expressivos, sem comentários desnecessários |
 | **Arquitetura** | Clean Architecture + DDD com 4 camadas separadas e regra de dependência |
 | **Tratamento de erros** | Hierarquia de exceções de domínio tipadas (`DomainException`, `ApplicationException`, 8+ específicas) |
-| **Argumentação** | Cada decisão está documentada neste README e em `doc/init.md` |
+| **Argumentação** | Cada decisão está documentada neste README |
 | **Design patterns** | Repository, Value Object, DTO, Use Case, Unit of Work, Factory Method, DI |
 | **Modelagem de dados** | UUIDs, `DECIMAL(15,2)`, normalização, integridade referencial, locking pessimista |
 
@@ -721,7 +719,7 @@ Mapeamento dos critérios de avaliação do desafio e como foram atendidos:
 | **Docker** | ✅ Laravel Sail com PHP + PostgreSQL |
 | **Testes unitários** | ✅ Domínio + Use Cases (Pest PHP com mocks) |
 | **Testes de integração** | ✅ CLI commands com SQLite in-memory |
-| **Documentação** | ✅ README completo + `doc/init.md` (arquitetura) + `doc/09-presentation-http.md` (frontend) |
+| **Documentação** | ✅ README completo |
 | **Observabilidade** | ✅ Telescope (dev) + Pulse (prod, documentado) |
 | **Interface web** | ✅ Vue 3 + Inertia.js (SPA server-driven) |
 
