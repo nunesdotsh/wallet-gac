@@ -162,7 +162,7 @@ CLI: tabela no terminal / HTTP: redirect com flash message
 git clone https://github.com/seu-usuario/wallet-gac.git
 cd wallet-gac
 
-# 2. Instalar dependências PHP
+# 2. Instalar dependências PHP (necessário antes de subir o Sail)
 composer install
 
 # 3. Configurar ambiente
@@ -174,12 +174,25 @@ php artisan key:generate
 
 # 5. Executar migrations
 ./vendor/bin/sail artisan migrate
-
-# 6. (Opcional) Instalar dependências JS para frontend
-./vendor/bin/sail npm install
 ```
 
-> **Nota:** O `compose.yaml` já configura PHP 8.5 + PostgreSQL 18 Alpine automaticamente via Sail.
+> **Aplicação disponível via CLI.** Os comandos Artisan já funcionam a partir daqui — veja a seção [Comandos CLI](#-comandos-cli-uso).
+
+> **💡 Alias útil:** Adicione `alias sail='./vendor/bin/sail'` ao seu `.bashrc`/`.zshrc` para digitar apenas `sail` ao invés de `./vendor/bin/sail`.
+
+#### Opcional: Interface Web
+
+```bash
+# 6. Instalar dependências JS
+./vendor/bin/sail npm install
+
+# 7. Compilar os assets do frontend
+./vendor/bin/sail npm run build
+```
+
+> **Acesse a aplicação em:** [http://localhost](http://localhost)
+>
+> Para desenvolvimento do frontend com hot-reload, use `./vendor/bin/sail npm run dev` em um terminal separado.
 
 ### Opção 2: SQLite (sem Docker)
 
@@ -201,11 +214,19 @@ php artisan key:generate
 # 4. Criar o arquivo do banco
 touch database/database.sqlite
 
-# 5. Executar migrations
+# 5. Executar migrations e iniciar o servidor
 php artisan migrate
-
-# 6. Iniciar servidor local
 php artisan serve
+```
+
+> **Aplicação disponível via CLI.** Com o servidor rodando, a interface web estará em [http://localhost](http://localhost).
+
+#### Opcional: Interface Web
+
+```bash
+# Em outro terminal, compilar os assets do frontend
+npm install
+npm run build
 ```
 
 > **💡 Por que suportar SQLite?** Demonstra a independência de banco de dados da Clean Architecture. Trocar de PostgreSQL para SQLite requer apenas alterar variáveis de ambiente — zero mudanças no código.
