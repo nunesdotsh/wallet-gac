@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { dashboard } from '@/routes';
 import type { BreadcrumbItem, Transaction, TransactionPaginated } from '@/types';
 
-const props = defineProps<{
+defineProps<{
     transactions: TransactionPaginated;
 }>();
 

@@ -11,7 +11,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { dashboard } from '@/routes';
 import type { BreadcrumbItem, Wallet, Transaction } from '@/types';
 
-const props = defineProps<{
+defineProps<{
     wallet?: Wallet;
     transactions: Transaction[];
 }>();
