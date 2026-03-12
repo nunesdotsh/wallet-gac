@@ -214,7 +214,7 @@ php artisan migrate
 php artisan serve
 ```
 
-> **Aplicação disponível via CLI.** Com o servidor rodando, a interface web estará em [http://localhost](http://localhost).
+> **Aplicação disponível via CLI.** Com o servidor rodando, a interface web estará em [http://localhost:8000](http://localhost:8000).
 
 #### Opcional: Interface Web
 
