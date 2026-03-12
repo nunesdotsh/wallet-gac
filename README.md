@@ -247,7 +247,15 @@ php artisan about
 
 A interação principal com o sistema é via **Artisan CLI**. Todos os comandos aceitam opções interativas ou flags diretas.
 
-> **Nota:** Se estiver usando Docker/Sail, prefixe os comandos com `./vendor/bin/sail`.
+> **Usando com Docker/Sail:** substitua `php artisan` por `./vendor/bin/sail artisan` em todos os comandos abaixo.
+>
+> ```bash
+> # Sem Sail (SQLite local)
+> php artisan wallet:deposit --email="joao@email.com" --amount="500.00"
+>
+> # Com Sail (Docker + PostgreSQL)
+> ./vendor/bin/sail artisan wallet:deposit --email="joao@email.com" --amount="500.00"
+> ```
 
 ### Criar Usuário
 
